@@ -1,0 +1,6 @@
+sklearn
+pandas
+psycopg2
+pymongo
+dotenv
+collections
