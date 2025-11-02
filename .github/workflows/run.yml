@@ -31,3 +31,5 @@ jobs:
         
       - name: Run script
         run: python choose_a_model.py
+        timeout-minutes: 360
+
