@@ -70,22 +70,25 @@ def dt_get_full_conection():
     load_dotenv()
     mongo_uri = os.getenv("MONGO_URI")
 
-    # Dados do PostgreSQL
-    db1_host = os.getenv("DB1_HOST")
-    db1_name = os.getenv("DB1_NAME")
-    db1_user = os.getenv("DB1_USER")
-    db1_pass = os.getenv("DB1_PASS")
-    db1_port = os.getenv("DB1_PORT")
-
     try:
+        db1_host = os.getenv("DB1_HOST")
+        db1_name = os.getenv("DB1_NAME")
+        db1_user = os.getenv("DB1_USER")
+        db1_pass = os.getenv("DB1_PASS")
+        db1_port = os.getenv("DB1_PORT")
+
         conn_1 = psycopg2.connect(
-            host=db1_host, database=db1_name, user=db1_user,
-            password=db1_pass, port=db1_port
+            host=db1_host,
+            database=db1_name,
+            user=db1_user,
+            password=db1_pass,
+            port=db1_port
         )
+
     except Exception as e:
-        print("\n Não foi possível conectar ao PostgreSQL")
+        print("\n⚠️ PostgreSQL OFFLINE — seguindo apenas com MongoDB")
         print("Erro:", e)
-        conn_1 = None  # <- evita quebrar
+        conn_1 = None
 
     return mongo_uri, conn_1
 
