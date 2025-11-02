@@ -21,6 +21,8 @@ def ml_get_data_numeric(data: pd.DataFrame):
     num_features = data.select_dtypes(include=['number']).columns.to_list()
     return num_features
 
+# functions.py - modificar a função ml_preprocess_data
+
 def ml_preprocess_data(numeric_features: list = [], categorical_features: list = []):
     transformers = []
 
@@ -39,7 +41,11 @@ def ml_preprocess_data(numeric_features: list = [], categorical_features: list =
         transformers.append(("cat", cat_transformer, categorical_features))
 
     if not transformers:
-        return None  
+        from sklearn.preprocessing import FunctionTransformer
+        dummy_transformer = FunctionTransformer(lambda x: x)
+        transformers.append(("dummy", dummy_transformer, [0]))
+        
+        return None
 
     preprocessor = ColumnTransformer(transformers=transformers)
     return preprocessor
