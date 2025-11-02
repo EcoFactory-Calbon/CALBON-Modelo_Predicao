@@ -12,7 +12,18 @@ O Fluxo do script é separado em partes entre modelos, orquestrador e notebooks.
 
 ## 🎲 Sobre os dados utilizados
 
-Os dados vêm do `MongoDB`. 
+Os dados vêm de duas fontes diferentes: `PostgresSQL` e `MongoDB`. 
+
+## 🏦 PostgresSQL
+
+| Coluna | Descrição |
+|:-------|:-----------|
+| **`numero_cracha`** | ID do funcionário, vem da tabela funcionário |
+| **`nivel_cargo`** | Cargo alto, médio ou baixo é o `nivel_cargo`, vem da tabela cargo|
+| **`cidade`** | Cidade de residência do funcionário, vem da tabela localização |
+| **`estado`** | Estado de residência do funcionário, vem da tabela localização |
+| **`categoria`** | Tipo de categoria da empresa que o funcionário trabalha (Alimentício, Energia etc), vem da tabela categoria_empresa |
+
 
 ## 🏦 MongoDB
 
