@@ -6,7 +6,7 @@
 
 O Fluxo do script é separado em partes entre modelos, orquestrador e notebooks. Foram escolhidos 3 modelos preditivos **com base nos conhecimentos estatísticos do time de dados do segundo ano**, criamos um arquivo `.py` para cada um dos modelos e também o arquivo `choose_a_model.py`, que executa e compara cada modelo, para assim, salvar somente o modelo com melhor desempenho na pasta `best_model`. Os notebooks servem como referência de fluxo em cada modelo, além de serem a primeira versão de cada um. O target de cada modelo é **`nivel_emissao`**, a fim de validar a pegada de carbono do usuário baseado nos dados fornecidos.
 
-> 💡 **Nota:** Reforçamos que os notebooks presentes neste diretório servem **única** e **exclusivamente** como apoio visual. O funcionamento correto de cada modelo está presente em cada arquivo `.py` com o mesmo nome do modelo utilizado
+> 💡 **Nota:** Reforçamos que os notebooks presentes neste diretório servem **única** e **exclusivamente** como apoio visual. O funcionamento correto de cada modelo está presente em cada arquivo `.py` com o mesmo nome do modelo utilizado. Ele salva o melhor modelo *localmente*, então é necessário clonar o repositório devido a limitações do github.
 
 ---
 
