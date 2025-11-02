@@ -251,7 +251,6 @@ def knn(data: pd.DataFrame):
 | **`cv=10`** | Número de divisões na validação cruzada interna, o valor 10 é um padrão robusto, oferecendo boa estimativa de generalização sem exagerar no tempo de treino. Isso reduz a variância nas métricas de validação e melhora a confiança nos hiperparâmetros escolhidos. |
 | **`random_state=42`** | Semente fixa para reprodutibilidade, garante que os mesmos resultados possam ser reproduzidos em execuções futuras. |
 | **`n_jobs=-1`** | Utiliza todos os núcleos de CPU disponíveis, isso é essencial para acelerar o LogisticRegressionCV, que realiza múltiplos treinos paralelamente. Além disso, otimiza o tempo de execução, especialmente com cv=10 e Cs múltiplos. |
-| **`verbose=1`** | Exibe o progresso do treinamento durante a execução, útil para monitorar o tempo de convergência e desempenho durante o ajuste com grandes bases. |
 | **`multi_class='multinomial'`** | Define a estratégia para problemas multiclasse, `multinomial` treina todas as classes simultaneamente, ao contrário de `ovr` (one-vs-rest). Isso fornece previsões mais consistentes quando há múltiplas classes e interdependência entre elas, ideal para datasets com várias categorias de emissão. |
 | **`l1_ratios=[0.1, 0.5, 0.9]`** | Define a proporção entre L1 e L2 na penalização elasticnet, permite testar diferentes graus de regularização combinada, ajustando o modelo à complexidade dos dados. Quanto maior o número, mais agressiva é a regularização na seleção de variáveis. |
 
@@ -287,7 +286,6 @@ def LogisticRegressionCV(data:pd.DataFrame):
                 cv=10, #deixei 10 para mais robustez
                 random_state=42, #Num padrão para reprodutibilidade - não influencia mt no resultado
                 n_jobs=-1, # Usar todos os núcleos disponíveis para acelerar o treinamento
-                verbose=1, # Para ver o progresso do treinamento
                 multi_class='multinomial', #Ele treina todas as classes de uma vez então para 10k de dados é melhor do que os outros
                 l1_ratios=[0.1, 0.5, 0.9] #Mistura l1 e l2 na regularização
             ))
