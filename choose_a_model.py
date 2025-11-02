@@ -1,8 +1,10 @@
 from collections import defaultdict
 from decision_tree import decision_tree
 from logisticRegressionCV import logisticRegressionCV
-import functions as fn
 from knn import knn
+import functions as fn
+import subprocess
+import os
 
 data = fn.dt_get_data()
 
@@ -18,28 +20,33 @@ results = {
 
 metric_fields = ["precision", "recall", "f1-score"]
 
-all_keys = set()
-for data in results.values():
-    rpt = data["report"]
-    if isinstance(rpt, str):
-        raise RuntimeError("classification reports must be dicts. Use output_dict=True when calling classification_report.")
-    all_keys.update(rpt.keys())
-
 wins = defaultdict(int)
 
-for key in all_keys:
-    for field in metric_fields:
+for name, data_item in results.items():
+    rpt = data_item["report"]
+
+    # Filtrar apenas classes reais (evitar 'accuracy', 'macro avg', etc)
+    valid_classes = [
+        k for k in rpt.keys()
+        if isinstance(rpt[k], dict) and all(m in rpt[k] for m in metric_fields)
+    ]
+
+    data_item["valid_classes"] = valid_classes
+
+# Comparação entre modelos
+for field in metric_fields:
+    for cls in set().union(*[v["valid_classes"] for v in results.values()]):
+
         values = {}
-        for name, data in results.items():
-            rpt = data["report"]
-            try:
-                val = rpt[key][field]
-            except Exception:
-                continue
-            try:
-                values[name] = float(val)
-            except Exception:
-                continue
+
+        for name, data_item in results.items():
+            rpt = data_item["report"]
+            if cls in data_item["valid_classes"]:
+                try:
+                    values[name] = float(rpt[cls][field])
+                except:
+                    pass
+
         if not values:
             continue
 
@@ -48,29 +55,33 @@ for key in all_keys:
             if v == max_val:
                 wins[name] += 1
 
-acc_values = {}
-for name, data in results.items():
-    try:
-        acc_values[name] = float(data["accuracy"])
-    except Exception:
-        continue
+# comparar accuracy
+acc_values = {name: float(d["accuracy"]) for name, d in results.items()}
+max_acc = max(acc_values.values())
+for n, v in acc_values.items():
+    if v == max_acc:
+        wins[n] += 1
 
-if acc_values:
-    rounded = {n: round(v, 6) for n, v in acc_values.items()}
-    max_acc = max(rounded.values())
-    for n, v in rounded.items():
-        if v == max_acc:
-            wins[n] += 1
-
-# Escolhe o melhor modelo (maior número de vitórias, desempate por accuracy)
-best_name = max(results.keys(), key=lambda n: (wins.get(n, 0), results[n].get("accuracy", 0)))
+# escolher melhor modelo
+best_name = max(results.keys(), key=lambda n: (wins[n], results[n]["accuracy"]))
 best_model = results[best_name]["model"]
 
-# Resumo final
 print("wins per model:", dict(wins))
 print("chosen model:", best_name)
 
-# salva o modelo escolhido
-for name, data in results.items():
-    if name == best_name:
-        fn.save_model(data["model"], "best_model.pkl")
+# salvar
+fn.save_model(best_model, "best_model.pkl", folder="best_model")
+
+
+# -----------------------------------------------
+# ---------  🔥 FAZER COMMIT AUTOMÁTICO ----------
+# -----------------------------------------------
+
+repo_path = os.path.abspath(".")
+model_path = os.path.join(repo_path, "best_model/best_model.pkl")
+
+subprocess.run(["git", "add", model_path], cwd=repo_path)
+subprocess.run(["git", "commit", "-m", f"Atualização automática do best_model: {best_name}"], cwd=repo_path)
+subprocess.run(["git", "push"], cwd=repo_path)
+
+print("🚀 Modelo salvo e commit enviado ao Git!")
