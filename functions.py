@@ -21,45 +21,27 @@ def ml_get_data_numeric(data: pd.DataFrame):
     num_features = data.select_dtypes(include=['number']).columns.to_list()
     return num_features
 
-def ml_preprocess_data(numeric_features: list=[], categorical_features: list = []):
-    if numeric_features == []:
-            cat_transformer = Pipeline(steps=[
-            ("imputer", SimpleImputer(strategy="most_frequent")),
-            ("onehot", OneHotEncoder(handle_unknown="ignore"))
-            ])
-            preprocessor = ColumnTransformer(
-            transformers=[
-            ("cat", cat_transformer, categorical_features)
-             ])
-    elif categorical_features == []:
-            num_transformer = Pipeline(steps=[
-            ("imputer", SimpleImputer(strategy="mean")),
-            ("minmaxscaler", MinMaxScaler())
-            ])
-            preprocessor = ColumnTransformer(
-            transformers=[
-            ("num", num_transformer, numeric_features)
-             ])
-    elif numeric_features == [] and categorical_features == []:
-        preprocessor = None
-    else:
+def ml_preprocess_data(numeric_features: list = [], categorical_features: list = []):
+    transformers = []
+
+    if numeric_features:
         num_transformer = Pipeline(steps=[
             ("imputer", SimpleImputer(strategy="mean")),
             ("minmaxscaler", MinMaxScaler())
         ])
+        transformers.append(("num", num_transformer, numeric_features))
 
+    if categorical_features:
         cat_transformer = Pipeline(steps=[
-        ("imputer", SimpleImputer(strategy="most_frequent")),
-        ("onehot", OneHotEncoder(handle_unknown="ignore"))
+            ("imputer", SimpleImputer(strategy="most_frequent")),
+            ("onehot", OneHotEncoder(handle_unknown="ignore"))
         ])
+        transformers.append(("cat", cat_transformer, categorical_features))
 
+    if not transformers:
+        return None  
 
-        preprocessor = ColumnTransformer(
-        transformers=[
-            ("num", num_transformer, numeric_features),
-            ("cat", cat_transformer, categorical_features)
-        ])
-    
+    preprocessor = ColumnTransformer(transformers=transformers)
     return preprocessor
 
 def dt_get_full_conection():
@@ -101,14 +83,10 @@ def dt_get_full_conection():
     return mongo_uri, conn_1
 
 
-
-
 def dt_get_data():
     from pymongo import MongoClient
     import pandas as pd
     import numpy as np
-    import psycopg2
-    import json
 
     mongo_uri, conn_1 = dt_get_full_conection()
 
@@ -118,7 +96,6 @@ def dt_get_data():
 
     mongo_df = pd.DataFrame(list(collection.find({}, {"_id": 0, "numero_cracha": 1, "classificacao_emissao": 1})))
 
-    # tentar conectar no SQL
     try:
         sql_query = """
         SELECT
@@ -134,7 +111,6 @@ def dt_get_data():
         LEFT JOIN categoria_empresa AS ce ON e.id_categoria = ce.id
         LEFT JOIN localizacao AS l ON f.id_localizacao = l.id
         """
-
         merged_sql = pd.read_sql(sql_query, conn_1)
 
     except Exception as e:
@@ -142,10 +118,8 @@ def dt_get_data():
         print("Rodando SOMENTE com dados do MongoDB\n")
         merged_sql = pd.DataFrame(columns=["numero_cracha","nivel_cargo","estado_residencia","cidade_residencia","nome_categoria"])
 
-    # juntar
     data = pd.merge(mongo_df, merged_sql, on="numero_cracha", how="left")
 
-    # remover coluna da chave
     if "numero_cracha" in data.columns:
         data.drop(columns=["numero_cracha"], inplace=True)
 
