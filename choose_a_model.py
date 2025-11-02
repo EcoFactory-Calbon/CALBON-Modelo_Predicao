@@ -46,13 +46,13 @@ def main():
     print(f"Features categóricas ({len(categorical_features)}): {categorical_features}")
 
     if not numeric_features and not categorical_features:
-        print("❌ ERRO: Nenhuma feature encontrada!")
+        print(" ERRO: Nenhuma feature encontrada!")
         exit(1)
 
     if not numeric_features:
-        print("⚠️  Nenhuma feature numérica encontrada. Criando feature dummy...")
+        print("  Nenhuma feature numérica encontrada. Criando feature dummy...")
         data['dummy_numeric_feature'] = 1
-        print("✅ Feature numérica dummy criada")
+        print(" Feature numérica dummy criada")
 
     print("\n=== VALORES NULOS ===")
     print(data.isnull().sum())
@@ -81,7 +81,7 @@ def main():
     if mask.sum() > 0:
         print(data[mask].head(10))
     else:
-        print("✅ Nenhuma célula não-escalar encontrada")
+        print(" Nenhuma célula não-escalar encontrada")
 
     print("\n" + "="*50)
     print("TREINANDO MODELOS...")
@@ -89,23 +89,23 @@ def main():
 
     try:
         tree_model, tree_report, tree_accuracy = decision_tree(data)
-        print("✅ Decision Tree concluído")
+        print(" Decision Tree concluído")
     except Exception as e:
-        print(f"❌ Erro no Decision Tree: {e}")
+        print(f" Erro no Decision Tree: {e}")
         tree_model, tree_report, tree_accuracy = None, {}, 0.0
 
     try:
         logreg_model, logreg_report, logreg_accuracy = logisticRegressionCV(data)
-        print("✅ Logistic Regression CV concluído")
+        print(" Logistic Regression CV concluído")
     except Exception as e:
-        print(f"❌ Erro no Logistic Regression: {e}")
+        print(f" Erro no Logistic Regression: {e}")
         logreg_model, logreg_report, logreg_accuracy = None, {}, 0.0
 
     try:
         knn_model, knn_report, knn_accuracy = knn(data)
-        print("✅ KNN concluído")
+        print(" KNN concluído")
     except Exception as e:
-        print(f"❌ Erro no KNN: {e}")
+        print(f" Erro no KNN: {e}")
         knn_model, knn_report, knn_accuracy = None, {}, 0.0
 
     # Coletar resultados
@@ -118,7 +118,7 @@ def main():
         results["KNN"] = {"model": knn_model, "report": knn_report, "accuracy": knn_accuracy}
 
     if not results:
-        print("❌ Nenhum modelo foi treinado com sucesso!")
+        print(" Nenhum modelo foi treinado com sucesso!")
         exit(1)
 
     print(f"\n=== MODELOS TREINADOS COM SUCESSO: {len(results)} ===")
@@ -167,14 +167,12 @@ def main():
     best_model = results[best_name]["model"]
     best_accuracy = results[best_name]["accuracy"]
 
-    print(f"\n🏆 MELHOR MODELO: {best_name}")
-    print(f"📊 Acurácia: {best_accuracy:.4f}")
-    print(f"🎯 Vitórias: {wins[best_name]}")
+    print(f"\n MELHOR MODELO: {best_name}")
+    print(f" Acurácia: {best_accuracy:.4f}")
+    print(f" Vitórias: {wins[best_name]}")
 
-    # SALVAR MODELO - GARANTINDO QUE SALVA NA PASTA DO GIT
     print("\n=== SALVANDO MELHOR MODELO ===")
     
-    # Encontrar a raiz do repositório Git
     try:
         repo_root = subprocess.run(
             ["git", "rev-parse", "--show-toplevel"],
@@ -182,23 +180,23 @@ def main():
             text=True,
             check=True
         ).stdout.strip()
-        print(f"📁 Raiz do repositório Git: {repo_root}")
+        print(f" Raiz do repositório Git: {repo_root}")
     except:
         repo_root = os.path.abspath(".")
-        print(f"⚠️  Não consegui encontrar a raiz do Git, usando diretório atual: {repo_root}")
+        print(f"  Não consegui encontrar a raiz do Git, usando diretório atual: {repo_root}")
     
     # Definir caminhos ABSOLUTOS dentro do repositório Git
     model_folder = os.path.join(repo_root, "best_model")
     model_filename = "best_model.pkl"
     model_path = os.path.join(model_folder, model_filename)
     
-    print(f"📁 Pasta do modelo: {model_folder}")
-    print(f"📄 Arquivo: {model_filename}")
-    print(f"📍 Caminho completo: {model_path}")
+    print(f" Pasta do modelo: {model_folder}")
+    print(f" Arquivo: {model_filename}")
+    print(f" Caminho completo: {model_path}")
     
     # Garantir que a pasta existe
     os.makedirs(model_folder, exist_ok=True)
-    print("✅ Pasta best_model criada/verificada")
+    print(" Pasta best_model criada/verificada")
     
     # VERIFICAR se a pasta best_model está no Git
     git_check = subprocess.run(
@@ -209,37 +207,44 @@ def main():
     )
     
     if git_check.returncode == 0 and git_check.stdout.strip():
-        print("✅ Pasta best_model já está rastreada pelo Git")
+        print(" Pasta best_model já está rastreada pelo Git")
     else:
-        print("⚠️  Pasta best_model não está no Git (será adicionada)")
+        print(" Pasta best_model não está no Git (será adicionada)")
     
-    # Salvar o modelo DIRETAMENTE no caminho absoluto
     try:
-        print("💾 Salvando modelo com joblib...")
+        print(" Salvando modelo com joblib")
         joblib.dump(best_model, model_path)
-        print("✅ Modelo salvo com joblib diretamente no repositório Git")
+        print(" Modelo salvo com joblib diretamente no repositório Git")
     except Exception as e:
-        print(f"❌ Erro ao salvar modelo: {e}")
+        print(f" Erro ao salvar modelo: {e}")
         exit(1)
     
-    # VERIFICAÇÃO CRÍTICA - o arquivo foi salvo?
     if os.path.exists(model_path):
         file_size = os.path.getsize(model_path)
-        print(f"✅ VERIFICAÇÃO: Modelo salvo com SUCESSO!")
-        print(f"   📍 Local: {model_path}")
-        print(f"   💾 Tamanho: {file_size} bytes")
-        print(f"   🏆 Modelo: {best_name}")
-        print(f"   📊 Acurácia: {best_accuracy:.4f}")
+        print(f" VERIFICAÇÃO: Modelo salvo com SUCESSO!")
+        print(f"    Local: {model_path}")
+        print(f"    Tamanho: {file_size} bytes")
+        print(f"    Modelo: {best_name}")
+        print(f"    Acurácia: {best_accuracy:.4f}")
     else:
-        print(f"❌ ERRO CRÍTICO: Modelo não foi salvo em {model_path}")
+        print(f" ERRO CRÍTICO: Modelo não foi salvo em {model_path}")
         exit(1)
 
-    # OPERAÇÕES GIT - GARANTIR QUE O MODELO SEJA COMMITADO
     print("\n=== ENVIANDO PARA GIT ===")
     
     try:
-        # Verificar status antes
-        print("📋 Status do Git antes das alterações:")
+        #É pro git n moia - teste pra ver se commita msm
+        print(" Configurando usuário Git para GitHub Actions")
+        subprocess.run([
+            "git", "config", "user.email", "github-actions[bot]@users.noreply.github.com"
+        ], cwd=repo_root, check=True, capture_output=True)
+        
+        subprocess.run([
+            "git", "config", "user.name", "github-actions[bot]"
+        ], cwd=repo_root, check=True, capture_output=True)
+        print(" Usuário Git configurado")
+
+        print(" Status do Git antes das alterações:")
         status_before = subprocess.run(
             ["git", "status", "--short"],
             cwd=repo_root,
@@ -248,8 +253,7 @@ def main():
         )
         print(status_before.stdout if status_before.stdout else "   (nenhuma alteração)")
         
-        # Adicionar a pasta best_model INTEIRA ao Git
-        print("\n➕ Adicionando pasta best_model ao Git...")
+        print("\n Adicionando pasta best_model ao Git...")
         add_result = subprocess.run(
             ["git", "add", "best_model/"],
             cwd=repo_root,
@@ -258,16 +262,14 @@ def main():
         )
         
         if add_result.returncode == 0:
-            print("✅ Pasta best_model adicionada ao staging area")
+            print(" Pasta best_model adicionada ao staging area")
         else:
-            print(f"⚠️  Erro ao adicionar pasta: {add_result.stderr}")
-            # Tentar adicionar apenas o arquivo
-            print("🔄 Tentando adicionar apenas o arquivo do modelo...")
+            print(f"  Erro ao adicionar pasta: {add_result.stderr}")
+            print(" Tentando adicionar apenas o arquivo do modelo...")
             subprocess.run(["git", "add", model_path], cwd=repo_root, check=True)
-            print("✅ Arquivo do modelo adicionado")
+            print(" Arquivo do modelo adicionado")
         
-        # Verificar status após add
-        print("\n📋 Status após git add:")
+        print("\n Status após git add:")
         status_after = subprocess.run(
             ["git", "status", "--short"],
             cwd=repo_root,
@@ -276,9 +278,8 @@ def main():
         )
         print(status_after.stdout if status_after.stdout else "   (nenhuma alteração)")
         
-        # Fazer commit
-        commit_message = f"🤖 Auto-update: best_model {best_name} (accuracy: {best_accuracy:.4f})"
-        print(f"\n💾 Fazendo commit: {commit_message}")
+        commit_message = f" Auto-update: best_model {best_name} (accuracy: {best_accuracy:.4f})"
+        print(f"\n Fazendo commit: {commit_message}")
         
         commit_result = subprocess.run(
             ["git", "commit", "-m", commit_message],
@@ -288,10 +289,9 @@ def main():
         )
         
         if commit_result.returncode == 0:
-            print("✅ Commit realizado com sucesso!")
+            print(" Commit realizado com sucesso!")
             
-            # Fazer push
-            print("\n🚀 Enviando para repositório remoto...")
+            print("\n Enviando para repositório remoto...")
             push_result = subprocess.run(
                 ["git", "push"],
                 cwd=repo_root,
@@ -300,49 +300,48 @@ def main():
             )
             
             if push_result.returncode == 0:
-                print("✅ Push realizado com sucesso!")
-                print("🎉 Modelo salvo e enviado para o Git!")
+                print(" Push realizado com sucesso!")
+                print(" Modelo salvo e enviado para o Git!")
             else:
-                print(f"⚠️  Push falhou: {push_result.stderr}")
-                print("💡 O modelo foi salvo localmente no repositório Git.")
+                print(f"  Push falhou: {push_result.stderr}")
+                print(" O modelo foi salvo localmente no repositório Git.")
         
         else:
-            print(f"⚠️  Commit falhou: {commit_result.stderr}")
-            print("💡 Possível motivo: nada para commitar (arquivo já estava commitado)")
-            print("💡 O modelo foi salvo localmente no repositório Git.")
+            print(f"  Commit falhou: {commit_result.stderr}")
+            print(" Possível motivo: nada para commitar (arquivo já estava commitado)")
+            print(" O modelo foi salvo localmente no repositório Git.")
             
     except subprocess.CalledProcessError as e:
-        print(f"⚠️  Erro no processo Git: {e}")
-        print("💡 O modelo foi salvo localmente no repositório Git.")
+        print(f"  Erro no processo Git: {e}")
+        print(" O modelo foi salvo localmente no repositório Git.")
     except FileNotFoundError:
-        print("⚠️  Git não encontrado no sistema")
-        print("💡 O modelo foi salvo localmente.")
+        print("  Git não encontrado no sistema")
+        print(" O modelo foi salvo localmente.")
     except Exception as e:
-        print(f"⚠️  Erro inesperado no Git: {e}")
-        print("💡 O modelo foi salvo localmente no repositório Git.")
+        print(f"  Erro inesperado no Git: {e}")
+        print(" O modelo foi salvo localmente no repositório Git.")
 
-    # VERIFICAÇÃO FINAL
     print("\n" + "="*60)
-    print("🎯 VERIFICAÇÃO FINAL")
+    print(" VERIFICAÇÃO FINAL")
     print("="*60)
-    print(f"🏆 Melhor modelo: {best_name}")
-    print(f"📊 Acurácia: {best_accuracy:.4f}")
-    print(f"📍 Local do modelo: {model_path}")
-    print(f"💾 Tamanho do arquivo: {os.path.getsize(model_path)} bytes")
+    print(f" Melhor modelo: {best_name}")
+    print(f" Acurácia: {best_accuracy:.4f}")
+    print(f" Local do modelo: {model_path}")
+    print(f" Tamanho do arquivo: {os.path.getsize(model_path)} bytes")
     
-    # Verificar se está na pasta do Git
+    # Verifiar se está na pasta do Git
     if model_path.startswith(repo_root):
-        print("✅ LOCALIZAÇÃO: Modelo salvo DENTRO do repositório Git")
+        print(" LOCALIZAÇÃO: Modelo salvo DENTRO do repositório Git")
     else:
-        print("❌ LOCALIZAÇÃO: Modelo salvo FORA do repositório Git")
+        print(" LOCALIZAÇÃO: Modelo salvo FORA do repositório Git")
     
     if os.path.exists(model_path):
-        print("✅ STATUS: Modelo salvo com SUCESSO!")
+        print(" STATUS: Modelo salvo com SUCESSO!")
     else:
-        print("❌ STATUS: Falha ao salvar o modelo!")
+        print(" STATUS: Falha ao salvar o modelo!")
     
     print("="*60)
-    print("✅ PROCESSO CONCLUÍDO!")
+    print(" PROCESSO CONCLUÍDO!")
 
 
 if __name__ == "__main__":
