@@ -8,6 +8,13 @@ import os
 
 data = fn.dt_get_data()
 
+
+for col in data.columns:
+    data[col] = data[col].apply(
+        lambda x: x if isinstance(x, (int, float, str)) else str(x)
+    )
+
+
 tree_model, tree_report, tree_accuracy = decision_tree(data)
 logreg_model, logreg_report, logreg_accuracy = logisticRegressionCV(data)
 knn_model, knn_report, knn_accuracy = knn(data)
@@ -24,21 +31,15 @@ wins = defaultdict(int)
 
 for name, data_item in results.items():
     rpt = data_item["report"]
-
-    # Filtrar apenas classes reais (evitar 'accuracy', 'macro avg', etc)
-    valid_classes = [
+    data_item["valid_classes"] = [
         k for k in rpt.keys()
         if isinstance(rpt[k], dict) and all(m in rpt[k] for m in metric_fields)
     ]
 
-    data_item["valid_classes"] = valid_classes
-
-# Comparação entre modelos
 for field in metric_fields:
     for cls in set().union(*[v["valid_classes"] for v in results.values()]):
 
         values = {}
-
         for name, data_item in results.items():
             rpt = data_item["report"]
             if cls in data_item["valid_classes"]:
@@ -55,27 +56,21 @@ for field in metric_fields:
             if v == max_val:
                 wins[name] += 1
 
-# comparar accuracy
 acc_values = {name: float(d["accuracy"]) for name, d in results.items()}
 max_acc = max(acc_values.values())
 for n, v in acc_values.items():
     if v == max_acc:
         wins[n] += 1
 
-# escolher melhor modelo
 best_name = max(results.keys(), key=lambda n: (wins[n], results[n]["accuracy"]))
 best_model = results[best_name]["model"]
 
 print("wins per model:", dict(wins))
 print("chosen model:", best_name)
 
-# salvar
+
 fn.save_model(best_model, "best_model.pkl", folder="best_model")
 
-
-# -----------------------------------------------
-# ---------  🔥 FAZER COMMIT AUTOMÁTICO ----------
-# -----------------------------------------------
 
 repo_path = os.path.abspath(".")
 model_path = os.path.join(repo_path, "best_model/best_model.pkl")
