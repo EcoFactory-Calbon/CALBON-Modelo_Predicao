@@ -70,13 +70,16 @@ def dt_get_full_conection():
     load_dotenv()
     mongo_uri = os.getenv("MONGO_URI")
 
-    db1_host = os.getenv("DB1_HOST")
+    IS_GITHUB = os.getenv("GITHUB_ACTIONS") == "true"
 
-    if not db1_host or db1_host.strip() == "***":
-        print("\n⚠️ PostgreSQL BLOQUEADO pelo GitHub Actions — usando só MongoDB")
+    if IS_GITHUB:
+        print("\n Rodando no GitHub Actions — ignorando PostgreSQL por segurança.")
         return mongo_uri, None
 
+    conn_1 = None
+
     try:
+        db1_host = os.getenv("DB1_HOST")
         db1_name = os.getenv("DB1_NAME")
         db1_user = os.getenv("DB1_USER")
         db1_pass = os.getenv("DB1_PASS")
@@ -96,6 +99,7 @@ def dt_get_full_conection():
         conn_1 = None
 
     return mongo_uri, conn_1
+
 
 
 
