@@ -239,7 +239,7 @@ def knn(data: pd.DataFrame):
 </details>
 
 <details>
-<summary> 📈 LinearRegressionCV </summary>
+<summary> 📈 LogisticRegressionCV </summary>
 
 | Parâmetro | Descrição |
 |:-------|:-----------|
@@ -256,13 +256,13 @@ def knn(data: pd.DataFrame):
 | **`l1_ratios=[0.1, 0.5, 0.9]`** | Define a proporção entre L1 e L2 na penalização elasticnet, permite testar diferentes graus de regularização combinada, ajustando o modelo à complexidade dos dados. Quanto maior o número, mais agressiva é a regularização na seleção de variáveis. |
 
 
-> 💡 **Nota:** o LinearRegressionCV é o LinearRegression mais otimizado, como o C crítico para mostrar a regularização é importante, o scikit-learn também disponibiliza uma versão já com Cross Validation do Linear Regression. Resumindo, é o Linear Regression com GridSearchCV implementado.
+> 💡 **Nota:** o LogisticRegressionCV é o LogisticRegression mais otimizado, como o C crítico para mostrar a regularização é importante, o scikit-learn também disponibiliza uma versão já com Cross Validation do Logistic Regression. Resumindo, é o Logistic Regression com GridSearchCV implementado.
 
 
 ```bash
 import pandas as pd
-def linearRegressionCV(data:pd.DataFrame):
-    from sklearn.linear_model import LogisticRegressionCV
+def LogisticRegressionCV(data:pd.DataFrame):
+    from sklearn.Logistic_model import LogisticRegressionCV
     from sklearn.pipeline import Pipeline
     from sklearn.model_selection import train_test_split
     from sklearn.metrics import classification_report
@@ -338,7 +338,7 @@ def linearRegressionCV(data:pd.DataFrame):
 
 from collections import defaultdict
 from decision_tree import decision_tree
-from linearRegressionCV import linearRegressionCV
+from LogisticRegressionCV import LogisticRegressionCV
 import functions as fn
 from knn import knn
 
