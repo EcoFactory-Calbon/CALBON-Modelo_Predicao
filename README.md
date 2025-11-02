@@ -10,11 +10,11 @@ O Fluxo do script é separado em partes entre modelos, orquestrador e notebooks.
 
 ---
 
-## Sobre os dados utilizados
+## 🎲 Sobre os dados utilizados
 
 Os dados vêm de duas fontes diferentes: `PostgresSQL` e `MongoDB`. 
 
-## PostgresSQL
+## 🏦 PostgresSQL
 
 | Coluna | Descrição |
 |:-------|:-----------|
@@ -25,7 +25,7 @@ Os dados vêm de duas fontes diferentes: `PostgresSQL` e `MongoDB`.
 | **`categoria`** | Tipo de categoria da empresa que o funcionário trabalha (Alimentício, Energia etc), vem da tabela categoria_empresa |
 
 
-## MongoDB
+## 🏦 MongoDB
 
 | Coluna | Descrição |
 |:-------|:-----------|
@@ -101,7 +101,7 @@ def ml_preprocess_data(numeric_features: list=[], categorical_features: list = [
 
 ```
 
-## Modelos 
+## 🪞 Modelos 
 
 <details>
 <summary> 🌲 Decision Tree </summary>
