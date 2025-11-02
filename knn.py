@@ -12,6 +12,17 @@ def knn(data):
     num_cols = fn.ml_get_data_numeric(X)
     cat_cols = fn.ml_get_data_string(X, 'classificacao_emissao')
 
+    # 🔥🔥🔥 >>> MESMA CORREÇÃO DO OUTRO CÓDIGO <<< 🔥🔥🔥
+    if len(num_cols) == 0 and len(cat_cols) == 0:
+        raise ValueError("ERROR: Nenhuma coluna numérica ou categórica encontrada. As listas estão vazias.")
+
+    if len(num_cols) == 0:
+        print("Aviso: Nenhuma coluna numérica encontrada. Continuando apenas com categóricas.")
+
+    if len(cat_cols) == 0:
+        print("Aviso: Nenhuma coluna categórica encontrada. Continuando apenas com numéricas.")
+    # 🔥🔥🔥 >>> FIM DA CORREÇÃO <<< 🔥🔥🔥
+
     preprocessor = fn.ml_preprocess_data(num_cols, cat_cols)
 
     model = Pipeline([
