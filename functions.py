@@ -120,6 +120,11 @@ def dt_get_data():
 
     data = pd.merge(mongo_df, merged_sql, on="numero_cracha", how="left")
 
+    for col in ["nivel_cargo", "estado_residencia", "cidade_residencia", "nome_categoria"]:
+        if col in data.columns:
+            data[col] = data[col].astype("object")
+
+
     if "numero_cracha" in data.columns:
         data.drop(columns=["numero_cracha"], inplace=True)
 
