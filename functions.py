@@ -70,7 +70,10 @@ def dt_get_full_conection():
     load_dotenv()
     mongo_uri = os.getenv("MONGO_URI")
 
+    conn_1 = None
+
     try:
+        # carregando variáveis dentro do try
         db1_host = os.getenv("DB1_HOST")
         db1_name = os.getenv("DB1_NAME")
         db1_user = os.getenv("DB1_USER")
@@ -91,6 +94,7 @@ def dt_get_full_conection():
         conn_1 = None
 
     return mongo_uri, conn_1
+
 
 
 def dt_get_data():
