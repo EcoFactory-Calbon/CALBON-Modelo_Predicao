@@ -25,7 +25,6 @@ def logisticRegressionCV(data:pd.DataFrame):
                 cv=10, #deixei 10 para mais robustez
                 random_state=42, #Num padrão para reprodutibilidade - não influencia mt no resultado
                 n_jobs=-1, # Usar todos os núcleos disponíveis para acelerar o treinamento
-                verbose=1, # Para ver o progresso do treinamento
                 multi_class='multinomial', #Ele treina todas as classes de uma vez então para 10k de dados é melhor do que os outros
                 l1_ratios=[0.1, 0.5, 0.9] #Mistura l1 e l2 na regularização
             ))
