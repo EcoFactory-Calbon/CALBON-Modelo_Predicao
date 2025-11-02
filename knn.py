@@ -6,16 +6,11 @@ def knn(data):
     from sklearn.preprocessing import LabelEncoder
     from sklearn.metrics import classification_report, accuracy_score
 
-    # separa dataset
     X, y = fn.ml_separate_features_and_target(data, 'classificacao_emissao')
     y_encoded = LabelEncoder().fit_transform(y)
 
-    # identifica colunas
-    df_num = fn.ml_get_data_numeric(X)
-    df_cat = fn.ml_get_data_string(X, 'classificacao_emissao')
-
-    num_cols = df_num.columns.tolist()
-    cat_cols = df_cat.columns.tolist()
+    num_cols = fn.ml_get_data_numeric(X)
+    cat_cols = fn.ml_get_data_string(X, 'classificacao_emissao')
 
     preprocessor = fn.ml_preprocess_data(num_cols, cat_cols)
 
@@ -29,10 +24,8 @@ def knn(data):
         test_size=0.3, random_state=42
     )
 
-    # treino inicial
     model.fit(X_train, y_train)
 
-    # grid search
     param_grid = {
         'classifier__n_neighbors': [3, 5, 7, 9],
         'classifier__weights': ['uniform', 'distance'],

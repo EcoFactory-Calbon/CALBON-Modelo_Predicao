@@ -9,11 +9,11 @@ def decision_tree(data):
     X, y = fn.ml_separate_features_and_target(data, 'classificacao_emissao')
     y_encoded = LabelEncoder().fit_transform(y)
 
-    df_num = fn.ml_get_data_numeric(X)
-    df_cat = fn.ml_get_data_string(X, 'classificacao_emissao')
+    num_cols = fn.ml_get_data_numeric(X)      # lista
+    cat_cols = fn.ml_get_data_string(X, 'classificacao_emissao')  # lista
 
-    num_cols = df_num.columns.tolist()
-    cat_cols = df_cat.columns.tolist()
+    df_num = X[num_cols]
+    df_cat = X[cat_cols]
 
     preprocessor = fn.ml_preprocess_data(num_cols, cat_cols)
 
