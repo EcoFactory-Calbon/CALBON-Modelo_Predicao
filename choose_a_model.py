@@ -5,6 +5,8 @@ from knn import knn
 import functions as fn
 import subprocess
 import os
+import numpy as np
+
 
 data = fn.dt_get_data()
 
@@ -13,6 +15,26 @@ for col in data.columns:
     data[col] = data[col].apply(
         lambda x: x if isinstance(x, (int, float, str)) else str(x)
     )
+
+# detectar quantos tipos diferentes aparecem em cada coluna
+type_counts = data.applymap(lambda x: type(x).__name__).nunique()
+
+print("=== tipos detectados por coluna (ex.: {'str': 10, 'list': 2}) ===")
+for c, t in type_counts.items():
+    print(c, t)
+
+# mostrar primeiras linhas com tipos (para inspeção)
+print("\n=== primeiras 10 linhas com tipos de cada coluna ===")
+print(data.head(10).applymap(lambda x: type(x).__name__))
+
+# linhas que possuem valores não escalares em QUALQUER coluna
+def is_scalar(x):
+    return isinstance(x, (str, int, float, bool, type(None), np.generic))
+
+mask = data.applymap(lambda x: not is_scalar(x)).any(axis=1)
+print("\n=== índices com alguma célula não-escalar (mostrando até 20) ===")
+print(data[mask].head(20))
+print("Total de linhas com pelo menos uma célula não-escalar:", mask.sum())
 
 
 tree_model, tree_report, tree_accuracy = decision_tree(data)
